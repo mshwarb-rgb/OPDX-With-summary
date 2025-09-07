@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -17,7 +18,7 @@ jobs:
           node-version: '18'
 
       - name: Install deps
-        run: npm ci
+        run: npm install
 
       - name: Add Android platform
         run: npx cap add android
