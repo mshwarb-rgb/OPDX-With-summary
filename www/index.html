@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<title>OPD Logger</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body onload="initOPD()">
+<header>
+  <div class="container flex" style="align-items:center;justify-content:space-between">
+    <h1>OPD Logger <small id="version" style="font-weight:normal;color:#666"></small></h1>
+    <nav>
+      <button id="nav-new" class="btn">New</button>
+      <button id="nav-summary" class="btn secondary">Summary</button>
+      <button id="nav-data" class="btn secondary">Data</button>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <div id="error"></div>
+
+  <!-- Screen: New -->
+  <section id="screen-new" class="section">
+    <div class="card">
+      <div class="keyline">
+        <span class="label">Patient ID:</span>
+        <span id="pid-display">---</span>
+        <span id="pid-status"></span>
+      </div>
+
+      <div class="kpad" style="margin:8px 0">
+        <div class="k" data-k="1">1</div><div class="k" data-k="2">2</div><div class="k" data-k="3">3</div>
+        <div class="k" data-k="4">4</div><div class="k" data-k="5">5</div><div class="k" data-k="6">6</div>
+        <div class="k" data-k="7">7</div><div class="k" data-k="8">8</div><div class="k" data-k="9">9</div>
+        <div class="k" data-k="B">⌫</div><div class="k" data-k="0">0</div><div class="k" data-k="C">C</div>
+      </div>
+
+      <h2>Gender</h2>
+      <div id="gender-chips" class="wrap"></div>
+
+      <h2>Age</h2>
+      <div id="age-chips" class="wrap"></div>
+
+      <h2>Diagnosis (max 2)</h2>
+      <div id="diagnosis-grid" class="grid cols-3"></div>
+      <div id="diag-count" class="small"></div>
+
+      <div id="ww-section" style="display:none">
+        <h2>WW</h2>
+        <div id="ww-chips" class="wrap"></div>
+      </div>
+
+      <h2>Disposition</h2>
+      <div id="disp-chips" class="wrap"></div>
+
+      <div class="flex" style="margin-top:12px">
+        <button id="save-new" class="btn">Save & New</button>
+        <button id="update" class="btn" style="display:none">Update</button>
+        <button id="cancel-edit" class="btn secondary" style="display:none">Cancel</button>
+        <button id="reset" class="btn secondary">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen: Summary -->
+  <section id="screen-summary" class="section" style="display:none">
+    <div class="grid cols-3">
+      <div class="card"><div class="label">Total</div><div id="k-total">0</div></div>
+      <div class="card"><div class="label">Male</div><div id="k-male">0</div></div>
+      <div class="card"><div class="label">Female</div><div id="k-female">0</div></div>
+      <div class="card"><div class="label">Surgical</div><div id="k-surg">0</div></div>
+      <div class="card"><div class="label">Medical</div><div id="k-med">0</div></div>
+      <div class="card"><div class="label">WW / NonWW</div><div id="k-ww">0/0</div></div>
+    </div>
+
+    <h3 style="margin-top:16px">Age Breakdown</h3>
+    <table id="age-breakdown-table" class="tbl">
+      <thead><tr><th>Age</th><th>Count</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Age × Gender</h3>
+    <table id="age-gender-table" class="tbl">
+      <thead><tr><th>Age</th><th>Male</th><th>Female</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Today's Pathologies (seen)</h3>
+    <table id="today-pathology-table" class="tbl">
+      <thead><tr><th>Pathology</th><th>Count</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Today's Dispositions</h3>
+    <table id="today-disposition-table" class="tbl">
+      <thead><tr><th>Disposition</th><th>Count</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Top Diagnoses (by first selection)</h3>
+    <div id="top-diags" class="card"></div>
+  </section>
+
+  <!-- Screen: Data -->
+  <section id="screen-data" class="section" style="display:none">
+    <div class="flex" style="margin-bottom:8px">
+      <button id="export-csv" class="btn">Export CSV</button>
+      <button id="export-xls" class="btn">Export Excel</button>
+      <button id="backup-json" class="btn secondary">Backup JSON</button>
+      <button id="restore-btn" class="btn secondary">Restore JSON</button>
+      <input id="restore-json" type="file" accept="application/json" style="display:none">
+      <button id="clear-all" class="btn secondary">Clear All</button>
+    </div>
+    <table id="data-table" class="tbl">
+      <thead>
+        <tr>
+          <th>Time</th><th>ID</th><th>Gender</th><th>Age</th>
+          <th>Diag Nos</th><th>Diag Names</th><th>C</th><th>WW</th><th>Disp</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <div class="footer-space"></div>
+</div>
+
+<script src="app.js?v=17"></script>
+<script>
+  // Register service worker for offline
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+</script>
+</body>
+</html>
